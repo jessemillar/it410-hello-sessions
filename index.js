@@ -14,6 +14,7 @@ passport.use(new localstrategy(function(username, password, done) {
 	if (username && password === 'pass') return done(null, {
 		username: username
 	});
+
 	return done(null, false);
 }));
 
@@ -48,7 +49,7 @@ app.use(bodyParser.urlencoded({
 app.get('/',
 	function(req, res) {
 		if (req.user) {
-			return res.sendStatus(200);
+			return res.send(req.user);
 		}
 
 		return res.sendStatus(401);
