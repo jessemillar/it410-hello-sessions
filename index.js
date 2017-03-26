@@ -2,7 +2,7 @@
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var express = require('express');
-var LocalStrategy = require('passport-local').Strategy;
+var localstrategy = require('passport-local').Strategy;
 var passport = require('passport');
 var session = require('express-session');
 
@@ -10,7 +10,7 @@ var session = require('express-session');
 var app = express();
 
 // tell passport to use a local strategy and tell it how to validate a username and password
-passport.use(new LocalStrategy(function(username, password, done) {
+passport.use(new localstrategy(function(username, password, done) {
 	if (username && password === 'pass') return done(null, {
 		username: username
 	});
@@ -30,23 +30,30 @@ passport.deserializeUser(function(id, done) {
 });
 
 // tell the express app what middleware to use
-app.use(bodyParser.urlencoded({
-	extended: true
-}));
 app.use(cookieParser());
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(session({
 	secret: 'secret key',
 	resave: false,
 	saveUninitialized: true
 }));
-app.use(passport.initialize());
-app.use(passport.session());
+
+app.use(bodyParser.urlencoded({
+	extended: true
+}));
 
 // home page
-app.get('/', function(req, res) {
-	if (req.user) return res.send('Hello, ' + req.user.username);
-	res.send('Hello, Stranger!');
-});
+app.get('/',
+	function(req, res) {
+		if (req.user) {
+			return res.sendStatus(200);
+		}
+
+		return res.sendStatus(401);
+	}
+);
 
 // health check
 app.get('/health',
@@ -64,17 +71,19 @@ app.get('/protected',
 );
 
 // specify the login url
-app.put('/auth',
+app.put('/login',
 	passport.authenticate('local'),
 	function(req, res) {
 		res.send('You are authenticated, ' + req.user.username);
 	});
 
 // log the user out
-app.delete('/auth', function(req, res) {
-	req.logout();
-	res.send('You have logged out.');
-});
+app.delete('/login',
+	function(req, res) {
+		req.logout();
+		res.send('You have logged out.');
+	}
+);
 
 // start the server listening
 app.listen(3000, function() {
