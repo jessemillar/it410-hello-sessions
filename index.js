@@ -75,7 +75,7 @@ app.get('/protected',
 app.put('/login',
 	passport.authenticate('local'),
 	function(req, res) {
-		res.send('You are authenticated, ' + req.user.username);
+		res.status(200).send(req.user);
 	});
 
 // log the user out
