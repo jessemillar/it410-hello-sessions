@@ -63,28 +63,28 @@ app.get('/health',
 	}
 );
 
-app.put('/:key/:val',
-    function(req, res) {
-        if (!req.user) {
+app.put('/',
+	function(req, res) {
+		if (!req.user) {
 			return res.sendStatus(401);
 		}
 
-        req.user[key] = val;
+		req.user[req.params.key] = req.params.value;
 
-        return res.send(req.user);
-    }
+		return res.send(req.user);
+	}
 );
 
-app.delete('/:key',
-    function(req, res) {
-        if (!req.user) { 
+app.delete('/',
+	function(req, res) {
+		if (!req.user) {
 			return res.sendStatus(401);
 		}
 
-        delete req.user[key];
+		delete req.user[req.params.key];
 
-        return res.send(req.user);
-    }
+		return res.send(req.user);
+	}
 );
 
 // specify the login url
@@ -92,7 +92,8 @@ app.post('/login',
 	passport.authenticate('local'),
 	function(req, res) {
 		res.status(200).send(req.user);
-	});
+	}
+);
 
 // log the user out
 app.delete('/login',
