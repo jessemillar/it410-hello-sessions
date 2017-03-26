@@ -63,6 +63,30 @@ app.get('/health',
 	}
 );
 
+app.put('/:key/:val',
+    function(req, res) {
+        if (!req.user) {
+			return res.sendStatus(401);
+		}
+
+        req.user[key] = val;
+
+        return res.send(req.user);
+    }
+);
+
+app.delete('/:key',
+    function(req, res) {
+        if (!req.user) { 
+			return res.sendStatus(401);
+		}
+
+        delete req.user[key];
+
+        return res.send(req.user);
+    }
+);
+
 // specify a URL that only authenticated users can hit
 app.get('/protected',
 	function(req, res) {
