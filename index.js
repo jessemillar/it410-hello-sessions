@@ -87,16 +87,8 @@ app.delete('/:key',
     }
 );
 
-// specify a URL that only authenticated users can hit
-app.get('/protected',
-	function(req, res) {
-		if (!req.user) return res.sendStatus(401);
-		res.send('You have access.');
-	}
-);
-
 // specify the login url
-app.put('/login',
+app.post('/login',
 	passport.authenticate('local'),
 	function(req, res) {
 		res.status(200).send(req.user);
