@@ -16,14 +16,14 @@ var users = [];
 passport.use(new localstrategy(function(username, password, done) {
 	for (var i = 0; i < users.length; i++) {
 		if (users[i].username == username) {
-			return done(null, users[i]);
+			return done(null, users[i].keys);
 		}
 	}
 
-	var usr = {username: username};
+	var usr = {username: username, keys: []};
 	users.push(usr);
 
-	return done(null, usr);
+	return done(null, usr.keys);
 }));
 
 // tell passport how to turn a user into serialized data that will be stored with the session
