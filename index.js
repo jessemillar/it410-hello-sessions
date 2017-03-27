@@ -11,9 +11,14 @@ var app = express();
 
 // tell passport to use a local strategy and tell it how to validate a username and password
 passport.use(new localstrategy(function(username, password, done) {
-	if (username && password === 'pass') return done(null, {
-		username: username
-	});
+	if (username && password) {
+		usr = new User({
+			username: username,
+			password: password
+		});
+
+		return done(null, usr);
+	}
 
 	return done(null, false);
 }));
