@@ -82,9 +82,7 @@ app.put('/',
 			return res.sendStatus(401);
 		}
 
-		console.log(req.user.keys);
-		console.log(Object.keys(req.query)[0]);
-		req.user.keys[Object.keys(req.query)[0]] = Object.values(req.query)[0]
+		Object.assign(req.user.keys, req.query);
 
 		return res.send(req.user.keys);
 	}
