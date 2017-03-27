@@ -20,7 +20,11 @@ passport.use(new localstrategy(function(username, password, done) {
 		}
 	}
 
-	var usr = {username: username, keys: {}};
+	var usr = {
+		username: username,
+		keys: {}
+	};
+
 	users.push(usr);
 
 	return done(null, usr);
@@ -28,14 +32,12 @@ passport.use(new localstrategy(function(username, password, done) {
 
 // tell passport how to turn a user into serialized data that will be stored with the session
 passport.serializeUser(function(user, done) {
-	done(null, user.username);
+	done(null, user);
 });
 
 // tell passport how to go from the serialized data back to the user
-passport.deserializeUser(function(id, done) {
-	done(null, {
-		username: id
-	});
+passport.deserializeUser(function(user, done) {
+	done(null, user);
 });
 
 // tell the express app what middleware to use
@@ -57,6 +59,8 @@ app.use(passport.session());
 // home page
 app.get('/',
 	function(req, res) {
+		console.log(req.user);
+
 		if (req.user) {
 			return res.send(req.user.keys);
 		}
@@ -78,9 +82,11 @@ app.put('/',
 			return res.sendStatus(401);
 		}
 
-		req.user.keys[req.params.key] = req.params.value;
+		console.log(req.user.keys);
+		console.log(Object.keys(req.query)[0]);
+		req.user.keys[Object.keys(req.query)[0]] = Object.values(req.query)[0]
 
-		return res.send(req.user);
+		return res.send(req.user.keys);
 	}
 );
 
@@ -90,9 +96,9 @@ app.delete('/',
 			return res.sendStatus(401);
 		}
 
-		delete req.user.keys[req.params.key];
+		delete req.user.keys[Object.keys(req.params.key)[0]];
 
-		return res.send(req.user);
+		return res.send(req.user.keys);
 	}
 );
 
