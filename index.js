@@ -9,18 +9,21 @@ var session = require('express-session');
 // initialize express app
 var app = express();
 
+// keep track of accounts in a horrible fashion
+var users = [];
+
 // tell passport to use a local strategy and tell it how to validate a username and password
 passport.use(new localstrategy(function(username, password, done) {
-	if (username && password) {
-		usr = new User({
-			username: username,
-			password: password
-		});
-
-		return done(null, usr);
+	for (var i = 0; i < users.length; i++) {
+		if (users[i].username == username) {
+			return done(null, users[i]);
+		}
 	}
 
-	return done(null, false);
+	var usr = {username: username};
+	users.push(usr);
+
+	return done(null, usr);
 }));
 
 // tell passport how to turn a user into serialized data that will be stored with the session
@@ -41,7 +44,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(session({
-	secret: 'secret key',
+	secret: 'poots',
 	resave: false,
 	saveUninitialized: true
 }));
