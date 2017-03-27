@@ -82,7 +82,15 @@ app.put('/',
 			return res.sendStatus(401);
 		}
 
+		// save in the session
 		Object.assign(req.user.keys, req.query);
+
+		// save in the "database"
+		for (var i = 0; i < users.length; i++) {
+			if (users[i].username == req.user.username) {
+				Object.assign(users[i].keys, req.query);
+			}
+		}
 
 		return res.send(req.user.keys);
 	}
