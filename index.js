@@ -16,14 +16,14 @@ var users = [];
 passport.use(new localstrategy(function(username, password, done) {
 	for (var i = 0; i < users.length; i++) {
 		if (users[i].username == username) {
-			return done(null, users[i].keys);
+			return done(null, users[i]);
 		}
 	}
 
-	var usr = {username: username, keys: []};
+	var usr = {username: username, keys: {}};
 	users.push(usr);
 
-	return done(null, usr.keys);
+	return done(null, usr);
 }));
 
 // tell passport how to turn a user into serialized data that will be stored with the session
@@ -99,7 +99,7 @@ app.delete('/',
 app.post('/login',
 	passport.authenticate('local'),
 	function(req, res) {
-		res.status(200).send(req.user);
+		res.status(200).send(req.user.keys);
 	}
 );
 
