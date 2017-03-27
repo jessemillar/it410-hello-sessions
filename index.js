@@ -77,7 +77,7 @@ app.put('/',
 			return res.sendStatus(401);
 		}
 
-		req.user[req.params.key] = req.params.value;
+		req.user.keys[req.params.key] = req.params.value;
 
 		return res.send(req.user);
 	}
@@ -89,7 +89,7 @@ app.delete('/',
 			return res.sendStatus(401);
 		}
 
-		delete req.user[req.params.key];
+		delete req.user.keys[req.params.key];
 
 		return res.send(req.user);
 	}
