@@ -40,8 +40,6 @@ passport.deserializeUser(function(id, done) {
 
 // tell the express app what middleware to use
 app.use(cookieParser());
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use(session({
 	secret: 'poots',
@@ -53,11 +51,14 @@ app.use(bodyParser.urlencoded({
 	extended: true
 }));
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 // home page
 app.get('/',
 	function(req, res) {
 		if (req.user) {
-			return res.send(req.user);
+			return res.send(req.user.keys);
 		}
 
 		return res.sendStatus(401);
